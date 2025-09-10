@@ -2,8 +2,6 @@
 
 # ============================================================
 # ETL PIPELINE SCRIPT - Annual Enterprise Survey 2023
-# Author: Kehinde Isaac
-#
 # This script performs the ETL pipeline in three stages:
 #   1. Extract - Download raw survey data
 #   2. Transform - Clean and select needed columns
