@@ -3,49 +3,42 @@
 # PURPOSE:
 #   This script will loop through all CSV files in the current folder
 #   and load them into PostgreSQL tables using the \COPY command.
-#
-#   For example:
-#     - A file called "orders.csv" will be loaded into a table called "orders"
-#     - A file called "accounts.csv" will be loaded into a table called "accounts"
-#
-#   Make sure:
-#     1. PostgreSQL is installed and running
-#     2. The target database exists (here we use "posey")
-#     3. The tables already exist in the database with the same names as the CSV files
+
 # Step 1: Database connection details
-# -------------------------------
-DB="posey"             # The name of the database where CSVs will be loaded
-USER="postgres"        # Database username
-PASSWORD="yourpassword" # Replace this with your real PostgreSQL password
+DB="posey"             # Database name
+USER="postgres"        # Database user
 
-# Export password so psql won't ask for it interactively
-export PGPASSWORD=$PASSWORD
+# Step 2: Check if CSV files exist
+shopt -s nullglob
+csv_files=(*.csv)
 
-# -------------------------------
-# Step 2: Loop through all CSV files
-# -------------------------------
-for file in *.csv; do
-  # Extract the base name of the file (e.g., "orders.csv" -> "orders")
+if [ ${#csv_files[@]} -eq 0 ]; then
+  echo "No CSV files found in the current directory."
+  exit 1
+fi
+
+# Step 3: Loop through CSV files
+for file in "${csv_files[@]}"; do
+  # Get table name (strip .csv extension)
   table=$(basename "$file" .csv)
 
-  echo "-----------------------------------------"
   echo "Preparing to load file: $file"
-  echo "Target table in Postgres: $table"
+  echo "Target table in PostgreSQL: $table"
 
-  # Run the COPY command to insert CSV data into the table
-  psql -U $USER -d $DB -c "\COPY $table FROM '$file' CSV HEADER;"
+  # Run the COPY command
+  psql -U "$USER" -d "$DB" -c "\COPY $table FROM '$file' CSV HEADER;"
 
-  # Check if the last command was successful
+  # Verify success/failure
   if [ $? -eq 0 ]; then
-    echo "Successfully loaded $file into table: $table"
+    echo "File $file was successfully loaded into table: $table"
+
+    # Count rows after load
+    row_count=$(psql -U "$USER" -d "$DB" -t -c "SELECT COUNT(*) FROM $table;")
+    echo "Table $table now contains $row_count rows."
   else
     echo "Failed to load $file into table: $table"
   fi
-  echo "-----------------------------------------"
 done
 
-# -------------------------------
-# Step 3: Final message
-# -------------------------------
-echo "All CSV files processed. Please check your database '$DB' to confirm the data was inserted."
-
+# Step 4: Final message
+echo "All CSV files processed. Please log into the database $DB to verify the data."
