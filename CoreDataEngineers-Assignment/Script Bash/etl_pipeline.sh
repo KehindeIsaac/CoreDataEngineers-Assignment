@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# ============================================================
 # ETL PIPELINE SCRIPT - Annual Enterprise Survey 2023
 # This script performs the ETL pipeline in three stages:
 #   1. Extract - Download raw survey data
@@ -8,7 +7,6 @@
 #   3. Load - Save the cleaned file into the Gold layer
 #
 # Each step includes verification to make sure it was successful.
-# ============================================================
 
 # -------------------------------
 # Step 1: Define file variables
