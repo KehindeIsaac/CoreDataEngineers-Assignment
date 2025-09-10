@@ -5,26 +5,21 @@
 #   1. Extract - Download raw survey data
 #   2. Transform - Clean and select needed columns
 #   3. Load - Save the cleaned file into the Gold layer
-#
-# Each step includes verification to make sure it was successful.
 
-# -------------------------------
 # Step 1: Define file variables
-# -------------------------------
+
 FILE_URL="https://stats.govt.nz/assets/Uploads/Annual-enterprise-survey/Annual-enterprise-survey-2023-financial-year-provisional/annual-enterprise-survey-2023-financial-year-provisional.csv"
 FILE_DIR="$HOME/CDE/Assignment"
 FILE_NAME=$(basename "$FILE_URL")
 FULL_PATH="$FILE_DIR/$FILE_NAME"
 
-# -------------------------------
 # Step 2: Create directory
-# -------------------------------
+
 mkdir -p "$FILE_DIR"
 echo "Directory ready: $FILE_DIR"
 
-# -------------------------------
 # Step 3: Extract (Download file)
-# -------------------------------
+
 echo "Downloading $FILE_NAME ..."
 wget -q "$FILE_URL" -O "$FULL_PATH"
 
@@ -36,9 +31,8 @@ else
   exit 1
 fi
 
-# -------------------------------
 # Step 4: Rename file
-# -------------------------------
+
 NEW_FILE_NAME="annual_enterprise_survey_2023.csv"
 NEW_FULL_PATH="$FILE_DIR/$NEW_FILE_NAME"
 
@@ -59,16 +53,15 @@ fi
 FILE_NAME="$NEW_FILE_NAME"
 FULL_PATH="$NEW_FULL_PATH"
 
-# -------------------------------
 # Step 5: Display column headers
-# -------------------------------
+
 echo "Reading original column headers..."
 columns=$(head -n 1 "$FULL_PATH")
 echo "Original Columns: $columns"
 
-# -------------------------------
+
 # Step 6: Rename column Variable_code
-# -------------------------------
+
 if echo "$columns" | grep -q "Variable_code"; then
   echo "Column 'Variable_code' found. Renaming it..."
   sed -i 's/Variable_code/variable_code/' "$FULL_PATH"
@@ -86,9 +79,8 @@ else
   echo "Column 'Variable_code' not found. No changes made."
 fi
 
-# -------------------------------
 # Step 7: Extract selected columns
-# -------------------------------
+
 TRANS_FILE_NAME="2023_year_finance.csv"
 TRANS_FILE_DIR="$FILE_DIR/Transformed"
 TRANS_FULL_PATH="$TRANS_FILE_DIR/$TRANS_FILE_NAME"
@@ -121,9 +113,8 @@ else
   exit 1
 fi
 
-# -------------------------------
 # Step 8: Load into Gold layer
-# -------------------------------
+
 LOAD_FILE_DIR="$FILE_DIR/Gold"
 LOAD_FILE_PATH="$LOAD_FILE_DIR/$TRANS_FILE_NAME"
 
