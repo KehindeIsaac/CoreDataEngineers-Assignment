@@ -12,9 +12,6 @@
 #     1. PostgreSQL is installed and running
 #     2. The target database exists (here we use "posey")
 #     3. The tables already exist in the database with the same names as the CSV files
-# ============================================================
-
-# -------------------------------
 # Step 1: Database connection details
 # -------------------------------
 DB="posey"             # The name of the database where CSVs will be loaded
